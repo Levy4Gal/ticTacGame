@@ -8,10 +8,10 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="787dp"
-        android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="h,1:1"
+        android:id="@+id/main_back_paint"
+        android:layout_width="426dp"
+        android:layout_height="431dp"
+        app:layout_constraintDimensionRatio="w,1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back" />
@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toStartOf="@+id/main_empty_3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/main_empty_1"
-        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/main_back_paint"
         app:srcCompat="@drawable/empty" />
 
     <ImageView
@@ -117,12 +117,24 @@
 
     <ImageView
         android:id="@+id/main_zero_play"
-        android:layout_width="680dp"
-        android:layout_height="186dp"
-        android:layout_marginTop="124dp"
+        android:layout_width="426dp"
+        android:layout_height="154dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/main_back_paint"
         app:srcCompat="@drawable/oplay" />
+
+    <ImageView
+        android:id="@+id/main_X_play"
+        android:layout_width="426dp"
+        android:layout_height="91dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_back_paint"
+        app:srcCompat="@drawable/xplay" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
