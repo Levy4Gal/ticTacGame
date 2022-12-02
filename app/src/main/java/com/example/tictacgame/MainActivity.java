@@ -43,14 +43,23 @@ public class MainActivity extends AppCompatActivity  {
                 resetGame();
             }
         });
-
-
-
-
     }
 
-    public Boolean checkWin(int activePlayer){
-        return true;
+    public Boolean checkWin(int activePlayer){//activePlayer=1-->X, =0-->o
+        for (int i = 0 ; i < winningSequences.length ;i++) {
+            System.out.println( winningSequences[i][0] + "==>" + gridPosition[winningSequences[i][0]-1]);
+            System.out.println(winningSequences[i][1] + "==>" + gridPosition[winningSequences[i][1]-1]);
+            System.out.println(winningSequences[i][2] + "==>" + gridPosition[winningSequences[i][2]-1]);
+            System.out.println("forloop");
+
+            if((gridPosition[winningSequences[i][0]-1]) == (gridPosition[winningSequences[i][1]-1]) &&
+                    (gridPosition[winningSequences[i][1]-1]) == (gridPosition[winningSequences[i][2]-1]) &&
+                    (gridPosition[winningSequences[i][0]-1]) != 2){
+                return true;
+               // gameActive = false;
+            }
+        }
+        return false;
     }
 
     public void resetGame(){
@@ -75,12 +84,14 @@ public class MainActivity extends AppCompatActivity  {
         empty9.setImageResource(R.drawable.empty);
 
         imgPlayer =  findViewById(R.id.main_X_play);
+        imgPlayer.setImageResource(R.drawable.xplay);
         restartBtn.setVisibility(View.GONE);
 
         gameActive = true;
         stepsCounter = 0;
         activePlayer = 1;//X start
         Arrays.fill(gridPosition, 2);
+
     }
 
     public void playerTap(View view){
@@ -88,35 +99,53 @@ public class MainActivity extends AppCompatActivity  {
         ImageView imgIndex =  (ImageView) view;
         int tappedImg = Integer.parseInt(imgIndex.getTag().toString());
         Log.d("TAG" , "location in grid: " + tappedImg);
-
-        if(stepsCounter==9){
-            gameActive = false;
-        }
-        else if(activePlayer == 0 && gridPosition[tappedImg-1]==2){
-            if(stepsCounter == 8){
+        if(gameActive) {
+            if (stepsCounter == 9) {
+                gameActive = false;
                 restartBtn.setVisibility(View.VISIBLE);
             }
-            gridPosition[tappedImg-1] = 0;
-            imgIndex.setImageResource(R.drawable.o);
-            //checkWin(activePlayer)
-            stepsCounter++;
-            activePlayer = 1;
-            imgPlayer.setImageResource(R.drawable.xplay);
-            System.out.println(Arrays.toString(gridPosition));
 
-        }
-        else if(activePlayer == 1 && gridPosition[tappedImg-1]==2){
-            if(stepsCounter == 8){
-                restartBtn.setVisibility(View.VISIBLE);
+            else {
+                if (activePlayer == 0 && gridPosition[tappedImg - 1] == 2) {
+                if (stepsCounter == 8) {
+                    restartBtn.setVisibility(View.VISIBLE);
+                }
+                gridPosition[tappedImg - 1] = 0;
+                imgIndex.setImageResource(R.drawable.o);
+                if (checkWin(activePlayer)) {
+                    imgPlayer.setImageResource(R.drawable.owin);
+                    gameActive = false;
+                    restartBtn.setVisibility(View.VISIBLE);
+                }else{
+                    stepsCounter++;
+                    activePlayer = 1;
+                    imgPlayer.setImageResource(R.drawable.xplay);
+                }
+
+
             }
-            gridPosition[tappedImg-1] = 1;
-            imgIndex.setImageResource(R.drawable.x);
-            //checkWin(activePlayer)-->if win -->r.draw.Xwins...
-            stepsCounter++;
-            activePlayer = 0;
-            imgPlayer.setImageResource(R.drawable.oplay);
-            System.out.println(Arrays.toString(gridPosition));
+                else if (activePlayer == 1 && gridPosition[tappedImg - 1] == 2) {
+                    if (stepsCounter == 8) {
+                        restartBtn.setVisibility(View.VISIBLE);
+                    }
+                    gridPosition[tappedImg - 1] = 1;
+                    imgIndex.setImageResource(R.drawable.x);
+                    if(checkWin(activePlayer)) {
+                        imgPlayer.setImageResource(R.drawable.xwin);
+                        restartBtn.setVisibility(View.VISIBLE);
+                        gameActive = false;
+                    }else if(stepsCounter == 8) {
+                        gameActive = false;
+                        imgPlayer.setImageResource(R.drawable.nowin);
+                        restartBtn.setVisibility(View.VISIBLE);
+                    }else{
+                        stepsCounter++;
+                        activePlayer = 0;
+                        imgPlayer.setImageResource(R.drawable.oplay);
+                        System.out.println(Arrays.toString(gridPosition));
+                    }
+                }
+}
         }
     }
-
 }
