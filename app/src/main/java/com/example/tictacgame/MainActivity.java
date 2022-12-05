@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.Arrays;
@@ -17,11 +16,14 @@ public class MainActivity extends AppCompatActivity  {
     int stepsCounter = 0;
 
     ImageView imgPlayer;
+    ImageView imgBackGround;
     View restartBtn;
 
     //0-O
     //1-X
     //2-null
+
+    int[] winnerPos = {};
 
     int[] gridPosition = {2,2,2,2,2,2,2,2,2};//zero to make idx easier
 
@@ -35,8 +37,8 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         restartBtn = findViewById(R.id.main_play_again_btn);
         restartBtn.setVisibility(View.GONE);
-
-       // restartBtn.setOnClickListener(this);
+        resetGame();
+        // restartBtn.setOnClickListener(this);
         restartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,14 +57,16 @@ public class MainActivity extends AppCompatActivity  {
             if((gridPosition[winningSequences[i][0]-1]) == (gridPosition[winningSequences[i][1]-1]) &&
                     (gridPosition[winningSequences[i][1]-1]) == (gridPosition[winningSequences[i][2]-1]) &&
                     (gridPosition[winningSequences[i][0]-1]) != 2){
+                winnerPos = winningSequences[i];//saving winnerPos
                 return true;
-               // gameActive = false;
+                // gameActive = false;
             }
         }
         return false;
     }
 
     public void resetGame(){
+//        ImageView emptyBig = findViewById(R.id.main_background_empty);
         ImageView empty1 = findViewById(R.id.main_empty_1);
         ImageView empty2 = findViewById(R.id.main_empty_2);
         ImageView empty3 = findViewById(R.id.main_empty_3);
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity  {
         ImageView empty8 = findViewById(R.id.main_empty_8);
         ImageView empty9 = findViewById(R.id.main_empty_9);
 
+//        emptyBig.setImageResource(R.drawable.empty);
         empty1.setImageResource(R.drawable.empty);
         empty2.setImageResource(R.drawable.empty);
         empty3.setImageResource(R.drawable.empty);
@@ -82,6 +87,9 @@ public class MainActivity extends AppCompatActivity  {
         empty7.setImageResource(R.drawable.empty);
         empty8.setImageResource(R.drawable.empty);
         empty9.setImageResource(R.drawable.empty);
+
+        imgBackGround = findViewById(R.id.main_background_empty);
+        imgBackGround.setImageResource(R.drawable.empty);
 
         imgPlayer =  findViewById(R.id.main_X_play);
         imgPlayer.setImageResource(R.drawable.xplay);
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity  {
     public void playerTap(View view){
         imgPlayer =  findViewById(R.id.main_X_play);
         ImageView imgIndex =  (ImageView) view;
+
         int tappedImg = Integer.parseInt(imgIndex.getTag().toString());
         Log.d("TAG" , "location in grid: " + tappedImg);
         if(gameActive) {
@@ -107,23 +116,24 @@ public class MainActivity extends AppCompatActivity  {
 
             else {
                 if (activePlayer == 0 && gridPosition[tappedImg - 1] == 2) {
-                if (stepsCounter == 8) {
-                    restartBtn.setVisibility(View.VISIBLE);
-                }
-                gridPosition[tappedImg - 1] = 0;
-                imgIndex.setImageResource(R.drawable.o);
-                if (checkWin(activePlayer)) {
-                    imgPlayer.setImageResource(R.drawable.owin);
-                    gameActive = false;
-                    restartBtn.setVisibility(View.VISIBLE);
-                }else{
-                    stepsCounter++;
-                    activePlayer = 1;
-                    imgPlayer.setImageResource(R.drawable.xplay);
-                }
+                    if (stepsCounter == 8) {
+                        restartBtn.setVisibility(View.VISIBLE);
+                    }
+                    gridPosition[tappedImg - 1] = 0;
+                    imgIndex.setImageResource(R.drawable.o);
+                    if (checkWin(activePlayer)) {
+                        imgPlayer.setImageResource(R.drawable.owin);
+                        gameActive = false;
+                        paintWinningLine();
+                        restartBtn.setVisibility(View.VISIBLE);
+                    }else{
+                        stepsCounter++;
+                        activePlayer = 1;
+                        imgPlayer.setImageResource(R.drawable.xplay);
+                    }
 
 
-            }
+                }
                 else if (activePlayer == 1 && gridPosition[tappedImg - 1] == 2) {
                     if (stepsCounter == 8) {
                         restartBtn.setVisibility(View.VISIBLE);
@@ -132,8 +142,9 @@ public class MainActivity extends AppCompatActivity  {
                     imgIndex.setImageResource(R.drawable.x);
                     if(checkWin(activePlayer)) {
                         imgPlayer.setImageResource(R.drawable.xwin);
-                        restartBtn.setVisibility(View.VISIBLE);
                         gameActive = false;
+                        paintWinningLine();
+                        restartBtn.setVisibility(View.VISIBLE);
                     }else if(stepsCounter == 8) {
                         gameActive = false;
                         imgPlayer.setImageResource(R.drawable.nowin);
@@ -145,7 +156,54 @@ public class MainActivity extends AppCompatActivity  {
                         System.out.println(Arrays.toString(gridPosition));
                     }
                 }
-}
+            }
         }
+    }
+
+//    {{1,2,3},{4,5,6},{7,8,9},{1,4,7},{2,5,8},{3,6,9},{1,5,9},{3,5,7}};
+
+
+    public void paintWinningLine() {
+        StringBuilder sb = new StringBuilder();
+        for (int w:winnerPos) {
+            sb.append(w).append("-");
+        }
+        String winnerPosStr = sb.toString();
+
+        switch (winnerPosStr){
+            case "1-2-3-":
+                imgBackGround.setImageResource(R.drawable.mark6);
+                break;
+
+            case "4-5-6-":
+                imgBackGround.setImageResource(R.drawable.mark7);
+                break;
+
+            case "7-8-9-":
+                imgBackGround.setImageResource(R.drawable.mark8);
+                break;
+
+            case "1-4-7-":
+                imgBackGround.setImageResource(R.drawable.mark3);
+                break;
+
+            case "2-5-8-":
+                imgBackGround.setImageResource(R.drawable.mark4);
+                break;
+
+            case "3-6-9-":
+                imgBackGround.setImageResource(R.drawable.mark5);
+                break;
+
+            case "1-5-9-":
+                imgBackGround.setImageResource(R.drawable.mark1);
+                break;
+
+            case "3-5-7-":
+                imgBackGround.setImageResource(R.drawable.mark2);
+                break;
+
+        }
+
     }
 }
